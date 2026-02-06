@@ -1,0 +1,454 @@
+/**
+ * ChatAnchor 样式表
+ * 目录面板 UI 样式
+ */
+
+/* ============================================================
+   CSS 变量
+   ============================================================ */
+:root {
+    --ca-bg: #ffffff;
+    --ca-bg-secondary: #f5f5f5;
+    --ca-bg-hover: #e8e8e8;
+    --ca-text: #1a1a1a;
+    --ca-text-secondary: #666666;
+    --ca-border: #e0e0e0;
+    --ca-accent: #10a37f;
+    --ca-accent-light: rgba(16, 163, 127, 0.1);
+    --ca-user-color: #7c3aed;
+    --ca-assistant-color: #10a37f;
+    --ca-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --ca-panel-width: 280px;
+    --ca-header-height: 48px;
+    --ca-transition: 0.2s ease;
+}
+
+/* 暗色模式 */
+html.dark {
+    --ca-bg: #1e1e1e;
+    --ca-bg-secondary: #2d2d2d;
+    --ca-bg-hover: #3d3d3d;
+    --ca-text: #e5e5e5;
+    --ca-text-secondary: #a0a0a0;
+    --ca-border: #404040;
+    --ca-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   面板容器
+   ============================================================ */
+#chatanchor-panel {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    width: var(--ca-panel-width);
+    max-height: calc(100vh - 120px);
+    background: var(--ca-bg);
+    border: 1px solid var(--ca-border);
+    border-radius: 12px;
+    box-shadow: var(--ca-shadow);
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--ca-text);
+    transition: transform var(--ca-transition), opacity var(--ca-transition);
+    overflow: hidden;
+}
+
+#chatanchor-panel.ca-collapsed {
+    transform: translateX(calc(100% + 20px));
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ============================================================
+   头部
+   ============================================================ */
+.ca-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--ca-border);
+    background: var(--ca-bg);
+    flex-shrink: 0;
+}
+
+.ca-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.ca-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--ca-accent);
+}
+
+.ca-header-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.ca-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ca-text-secondary);
+    transition: background var(--ca-transition), color var(--ca-transition);
+}
+
+.ca-btn:hover {
+    background: var(--ca-bg-hover);
+    color: var(--ca-text);
+}
+
+.ca-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================================
+   搜索框
+   ============================================================ */
+.ca-search {
+    padding: 8px 15px 4px 15px;
+    /* 减小底部间距: 8px -> 0 */
+    /* border-bottom: 1px solid var(--ca-border); 移除底部横线 */
+    flex-shrink: 0;
+}
+
+.ca-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--ca-border);
+    border-radius: 8px;
+    background: var(--ca-bg-secondary);
+    color: var(--ca-text);
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--ca-transition), box-shadow var(--ca-transition);
+}
+
+.ca-search-input::placeholder {
+    color: var(--ca-text-secondary);
+}
+
+.ca-search-input:focus {
+    border-color: var(--ca-accent);
+    box-shadow: 0 0 0 3px var(--ca-accent-light);
+}
+
+/* ============================================================
+   目录列表
+   ============================================================ */
+.ca-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 8px 8px 8px;
+    /* 减小顶部间距: 8px -> 4px */
+    min-height: 100px;
+    max-height: calc(100vh - 280px);
+}
+
+.ca-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ca-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ca-list::-webkit-scrollbar-thumb {
+    background: var(--ca-border);
+    border-radius: 3px;
+}
+
+.ca-list::-webkit-scrollbar-thumb:hover {
+    background: var(--ca-text-secondary);
+}
+
+.ca-item {
+    display: flex;
+    align-items: center;
+    /* 垂直居中 */
+    gap: 6px;
+    /* 减小间距，因为序号有了固定宽度 */
+    padding: 6px 8px 6px 0px;
+    /* 减小左侧间距 (8px -> 4px) */
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    background: transparent;
+}
+
+.ca-item:hover {
+    background: var(--ca-bg-hover);
+}
+
+.ca-item-active {
+    background: var(--ca-accent-light);
+}
+
+.ca-item-active:hover {
+    background: var(--ca-accent-light);
+}
+
+.ca-item-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.ca-type-user {
+    background: rgba(124, 58, 237, 0.15);
+    color: var(--ca-user-color);
+}
+
+.ca-type-assistant {
+    background: rgba(16, 163, 127, 0.15);
+    color: var(--ca-assistant-color);
+}
+
+.ca-item-index {
+    color: var(--ca-text-secondary);
+    font-size: 13px;
+    flex-shrink: 0;
+    width: 24px;
+    /* 固定宽度，确保后续文字对齐 */
+    text-align: right;
+    /* 数字右对齐 */
+    font-variant-numeric: tabular-nums;
+    /* 等宽数字 */
+}
+
+.ca-item-summary {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    /* 稍微增大文字 */
+    line-height: 22px;
+    /* 设置行高与按钮高度一致(22px)，防止按钮出现时高度跳动 */
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+
+
+/* 悬停时显示重命名按钮 */
+.ca-item-rename-btn {
+    display: none;
+    /* 默认不占用空间，允许文字占据更多宽度 */
+    background-image: var(--ca-icon-rename);
+    background-position: center;
+    background-size: 18px;
+    /* 稍微放大图标 */
+    background-repeat: no-repeat;
+    border: none;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-radius: 4px;
+    /* 移除 opacity transition 以防止闪烁，只保留背景色过渡 */
+    transition: background-color 0.15s ease;
+    filter: opacity(0.6);
+}
+
+.ca-item:hover .ca-item-rename-btn {
+    display: block;
+    /* 悬停时显示，此时文字区域会自动缩小 */
+}
+
+.ca-item-rename-btn:hover {
+    background-color: var(--ca-hover);
+    filter: opacity(1);
+}
+
+/* 编辑模式 */
+.ca-item-editing {
+    padding: 6px 12px;
+    gap: 6px;
+    align-items: center;
+    min-height: 42px;
+    box-sizing: border-box;
+}
+
+.ca-rename-input {
+    flex: 1;
+    min-width: 0;
+    padding: 4px 8px;
+    height: 28px;
+    font-size: 13px;
+    border: 1px solid var(--ca-accent);
+    border-radius: 4px;
+    background: var(--ca-bg);
+    color: var(--ca-text);
+    outline: none;
+    box-sizing: border-box;
+    line-height: normal;
+}
+
+.ca-rename-input:focus {
+    box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+}
+
+/* 已移除确认和取消按钮样式 */
+
+
+/* 跳转目标指示器（小绿点） */
+.ca-item-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin: 0 2px;
+    /* 增加小圆点左右间距 (flex gap 6px + margin 2px = 左右各 8px 视觉间距) */
+    /* 移除 margin-top，依赖 flex align-items: center */
+    background: transparent;
+}
+
+.ca-indicator-active {
+    background: #22c55e;
+    box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
+}
+
+/* Tooltip 样式 */
+.ca-tooltip {
+    position: absolute;
+    z-index: 10000;
+    background: var(--ca-bg);
+    border: 1px solid var(--ca-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ca-text);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    white-space: pre-wrap;
+    word-break: break-word;
+    animation: ca-tooltip-fadeIn 0.15s ease;
+}
+
+@keyframes ca-tooltip-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ca-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    color: var(--ca-text-secondary);
+    font-size: 13px;
+}
+
+/* ============================================================
+   底部
+   ============================================================ */
+.ca-footer {
+    padding: 10px 16px;
+    border-top: 1px solid var(--ca-border);
+    background: var(--ca-bg);
+    flex-shrink: 0;
+}
+
+.ca-count {
+    font-size: 12px;
+    color: var(--ca-text-secondary);
+}
+
+/* ============================================================
+   展开按钮
+   ============================================================ */
+.ca-expand-btn {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--ca-border);
+    border-radius: 10px;
+    background: var(--ca-bg);
+    box-shadow: var(--ca-shadow);
+    cursor: pointer;
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ca-accent);
+    transition: transform var(--ca-transition), box-shadow var(--ca-transition);
+}
+
+.ca-expand-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ca-expand-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 768px) {
+    #chatanchor-panel {
+        width: 260px;
+        right: 8px;
+        top: 50px;
+        max-height: calc(100vh - 100px);
+    }
+
+    .ca-expand-btn {
+        right: 8px;
+        top: 50px;
+    }
+}
+
+/* ============================================================
+   动画
+   ============================================================ */
+@keyframes ca-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#chatanchor-panel {
+    animation: ca-fadeIn 0.3s ease;
+}

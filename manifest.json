@@ -1,0 +1,48 @@
+{
+    "manifest_version": 3,
+    "name": "ChatAnchor",
+    "version": "1.0.0",
+    "description": "为 ChatGPT 打造的对话导航工具，自动生成对话侧边目录，支持一键快速跳转至任意问答，助您在长对话中轻松定位",
+    "permissions": [
+        "storage"
+    ],
+    "host_permissions": [
+        "https://chatgpt.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://chatgpt.com/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [
+                "styles.css"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
+    "action": {
+        "default_title": "ChatAnchor - 对话目录"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icons/*.png",
+                "icons/*.svg"
+            ],
+            "matches": [
+                "https://chatgpt.com/*"
+            ]
+        }
+    ],
+    "icons": {
+        "16": "icons/icon16.png",
+        "19": "icons/icon19.png",
+        "32": "icons/icon32.png",
+        "38": "icons/icon38.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    }
+}
