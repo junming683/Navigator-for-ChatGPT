@@ -1,8 +1,8 @@
-# Privacy Policy for ChatAnchor
+# Privacy Policy for ChatGPT Chat Navigator
 
 **Effective Date:** February 06, 2026
 
-ChatAnchor ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use the ChatAnchor Chrome extension (the "Extension").
+ChatGPT Chat Navigator ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use the ChatGPT Chat Navigator Chrome extension (the "Extension").
 
 ## 1. Data Collection and Usage
 

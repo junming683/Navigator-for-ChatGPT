@@ -1,4 +1,4 @@
-# ChatAnchor
+# ChatGPT Chat Navigator
 
 > 为 ChatGPT 打造的对话导航工具，自动生成侧边目录，助您在长对话中快速定位
 
@@ -7,7 +7,7 @@
 
 ## 简介
 
-**ChatAnchor** 是一款 Chrome 浏览器扩展，专为 ChatGPT 深度用户设计。当您与 ChatGPT 进行长篇对话时，它会自动在页面左侧生成一个清晰的悬浮目录面板，让您可以一目了然地查看对话结构，并快速跳转到任意问答位置。
+**ChatGPT Chat Navigator** 是一款 Chrome 浏览器扩展，专为 ChatGPT 深度用户设计。当您与 ChatGPT 进行长篇对话时，它会自动在页面左侧生成一个清晰的悬浮目录面板，让您可以一目了然地查看对话结构，并快速跳转到任意问答位置。
 
 ## 功能特性
 
@@ -67,7 +67,7 @@
 ## 项目结构
 
 ```
-ChatAnchor/
+ChatGPT-Chat-Navigator/
 ├── manifest.json      # 扩展配置文件
 ├── content.js         # 核心脚本
 ├── styles.css         # 样式文件

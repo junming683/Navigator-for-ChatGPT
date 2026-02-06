@@ -1,5 +1,5 @@
 /**
- * ChatAnchor - ChatGPT 对话目录导航插件
+ * ChatGPT Chat Navigator - ChatGPT 对话目录导航插件
  * 为 ChatGPT 对话提供目录面板，支持快速跳转到任意问答位置
  */
 
@@ -211,7 +211,7 @@
                 this.customNames = allRenames[this.conversationId] || {};
                 this.render(); // 加载完成后更新 UI
             } catch (e) {
-                console.warn('ChatAnchor: 加载自定义名称失败', e);
+                console.warn('ChatGPT Chat Navigator: 加载自定义名称失败', e);
                 this.customNames = {};
             }
         }
@@ -239,7 +239,7 @@
 
                 await chrome.storage.local.set({ [CONFIG.STORAGE_KEY]: allRenames });
             } catch (e) {
-                console.warn('ChatAnchor: 保存自定义名称失败', e);
+                console.warn('ChatGPT Chat Navigator: 保存自定义名称失败', e);
             }
         }
 
@@ -270,7 +270,7 @@
             try {
                 this.panel.style.setProperty('--ca-icon-rename', `url('${chrome.runtime.getURL('icons/rename.png')}')`);
             } catch (e) {
-                console.warn('ChatAnchor: 设置图标路径失败', e);
+                console.warn('ChatGPT Chat Navigator: 设置图标路径失败', e);
             }
             this.panel.innerHTML = `
         <div class="ca-header">
@@ -630,7 +630,7 @@
             // 检查对话 ID 是否变更（处理路由切换）
             const currentConvId = this.getConversationId();
             if (this.conversationId !== currentConvId) {
-                // console.log(`ChatAnchor: 对话切换 ${this.conversationId} -> ${currentConvId}`);
+                // console.log(`ChatGPT Chat Navigator: 对话切换 ${this.conversationId} -> ${currentConvId}`);
                 this.conversationId = currentConvId;
                 this.loadCustomNames();
             }
@@ -785,7 +785,7 @@
             try {
                 localStorage.setItem('chatanchor-collapsed', JSON.stringify(this.isCollapsed));
             } catch (e) {
-                console.warn('ChatAnchor: 无法保存状态', e);
+                console.warn('ChatGPT Chat Navigator: 无法保存状态', e);
             }
         }
 
@@ -803,7 +803,7 @@
                     }
                 }
             } catch (e) {
-                console.warn('ChatAnchor: 无法恢复状态', e);
+                console.warn('ChatGPT Chat Navigator: 无法恢复状态', e);
             }
         }
 
@@ -858,7 +858,7 @@
     // ============================================================
     // 主程序
     // ============================================================
-    class ChatAnchor {
+    class ChatGPTChatNavigator {
         constructor() {
             this.tocManager = new TocManager();
             this.tocPanel = new TocPanel(this.tocManager);
@@ -889,7 +889,7 @@
                 this.tocPanel.refresh();
                 this.setupObserver();
                 this.setupScrollListener();
-                console.log('ChatAnchor: 初始化完成');
+                console.log('ChatGPT Chat Navigator: 初始化完成');
             }, 1000);
         }
 
@@ -946,6 +946,6 @@
     // ============================================================
     // 启动
     // ============================================================
-    const app = new ChatAnchor();
+    const app = new ChatGPTChatNavigator();
     app.init();
 })();
