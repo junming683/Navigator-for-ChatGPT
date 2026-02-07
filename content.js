@@ -341,9 +341,11 @@
             const headerActions = document.getElementById('conversation-header-actions');
 
             if (headerActions) {
+                // 如果按钮已在正确位置，跳过
+                if (this.collapseBtn.parentElement === headerActions) return;
                 // 插入到容器的第一个位置（Share 按钮左侧）
                 headerActions.insertBefore(this.collapseBtn, headerActions.firstChild);
-            } else {
+            } else if (!this.collapseBtn.parentElement) {
                 // 降级方案：添加到 body
                 console.warn('ChatGPT Chat Navigator: 未找到右上角按钮容器，使用降级方案');
                 document.body.appendChild(this.collapseBtn);
@@ -679,6 +681,8 @@
 
             // 确保面板在正确的 DOM 位置（SPA 路由切换可能导致容器重建）
             this.insertPanelIntoLayout();
+            // 确保展开按钮在正确的 DOM 位置（SPA 路由切换会重建 header）
+            this.insertExpandButton();
 
             // 如果正在滚动或正在重命名，跳过刷新以避免干扰
             if (this.isScrolling || this.editingItemId) return;

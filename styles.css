@@ -38,6 +38,7 @@ html.dark {
    面板容器
    ============================================================ */
 #chatanchor-panel {
+    position: relative;
     width: var(--ca-panel-width);
     height: 100%;
     background: var(--ca-bg);
