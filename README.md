@@ -1,15 +1,25 @@
 # ChatGPT Chat Navigator
 
-> 为 ChatGPT 打造的对话导航工具，自动生成侧边目录，助您在长对话中快速定位
+为 ChatGPT 打造的对话导航工具，自动生成侧边目录，助您在长对话中快速定位
 
 ![Chrome Extension](https://img.shields.io/badge/Platform-Chrome-4285F4?logo=google-chrome&logoColor=white)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-brightgreen)
 
 ## 简介
 
-**ChatGPT Chat Navigator** 是一款 Chrome 浏览器扩展，专为 ChatGPT 深度用户设计。当您与 ChatGPT 进行长篇对话时，它会自动在页面左侧生成一个清晰的悬浮目录面板，让您可以一目了然地查看对话结构，并快速跳转到任意问答位置。
+**ChatGPT Chat Navigator** 是一款 Chrome 浏览器扩展，专为 ChatGPT 深度用户设计。当您与 ChatGPT 进行长篇对话时，它会自动在页面右侧生成一个侧边栏目录面板，让您可以一目了然地查看对话结构，并快速跳转到任意问答位置。
 
 ## 功能特性
+
+### 侧边栏布局
+- 以右侧边栏形式嵌入 ChatGPT 页面，与左侧边栏对称
+- 打开/关闭时主内容区宽度自动调整，不遮挡对话内容
+- 折叠按钮集成在 ChatGPT 右上角，与原生按钮风格一致
+
+### 统一视觉风格
+- 直接使用 ChatGPT 原生 CSS token 变量，自动适配亮色/暗色模式
+- 交互效果与 ChatGPT 左侧边栏保持一致
+- 字体、颜色、间距均遵循 ChatGPT 的设计规范
 
 ### 自动生成目录
 - 实时扫描对话内容，提取用户提问作为目录项
@@ -17,7 +27,7 @@
 
 ### 快速跳转
 - 点击目录项即可平滑滚动到对应位置
-- 绿色指示点标记当前跳转目标
+- 指示点标记当前跳转目标
 - 自动高亮当前可视区域的对话项
 
 ### 自定义重命名
@@ -49,7 +59,7 @@
    - 选择本项目的根目录（包含 `manifest.json` 的文件夹）
 
 5. **开始使用**
-   - 访问 [ChatGPT](https://chatgpt.com) 即可看到左侧目录面板
+   - 访问 [ChatGPT](https://chatgpt.com) 即可看到右侧目录面板
 
 ## 使用指南
 
@@ -60,8 +70,7 @@
 | **输入框回车** | 确认重命名 |
 | **输入框 ESC** | 取消重命名 |
 | **搜索框输入** | 实时过滤目录项 |
-| **刷新按钮** | 手动刷新目录 |
-| **折叠按钮** | 折叠/展开面板 |
+| **折叠按钮** | 折叠/展开侧边栏 |
 
 ## 项目结构
 

@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "ChatGPT Chat Navigator",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "为 ChatGPT 打造的对话导航工具，自动生成对话侧边目录，支持一键快速跳转至任意问答，助您在长对话中轻松定位",
     "permissions": [
         "storage"
