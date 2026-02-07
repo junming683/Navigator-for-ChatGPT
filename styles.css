@@ -1,37 +1,16 @@
 /**
  * ChatGPT Chat Navigator 样式表
  * 目录面板 UI 样式
+ * 直接使用 ChatGPT 原生 CSS token 变量，自动适配 light/dark 模式
  */
 
 /* ============================================================
-   CSS 变量
+   CSS 变量（仅保留布局/动画变量，颜色全部使用 ChatGPT 原生 token）
    ============================================================ */
 :root {
-    --ca-bg: #ffffff;
-    --ca-bg-secondary: #f5f5f5;
-    --ca-bg-hover: #e8e8e8;
-    --ca-text: #1a1a1a;
-    --ca-text-secondary: #666666;
-    --ca-border: #e0e0e0;
-    --ca-accent: #10a37f;
-    --ca-accent-light: rgba(16, 163, 127, 0.1);
-    --ca-user-color: #7c3aed;
-    --ca-assistant-color: #10a37f;
-    --ca-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     --ca-panel-width: 280px;
     --ca-header-height: 48px;
     --ca-transition: 0.2s ease;
-}
-
-/* 暗色模式 */
-html.dark {
-    --ca-bg: #1e1e1e;
-    --ca-bg-secondary: #2d2d2d;
-    --ca-bg-hover: #3d3d3d;
-    --ca-text: #e5e5e5;
-    --ca-text-secondary: #a0a0a0;
-    --ca-border: #404040;
-    --ca-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* ============================================================
@@ -41,16 +20,24 @@ html.dark {
     position: relative;
     width: var(--ca-panel-width);
     height: 100%;
-    background: var(--ca-bg);
-    border-left: 1px solid var(--ca-border);
+    background: var(--sidebar-surface-primary);
+    border-left: 1px solid var(--border-light);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-size: 14px;
-    color: var(--ca-text);
+    color: var(--text-primary);
     transition: width var(--ca-transition);
     overflow: hidden;
+    /* 目录项交互色（复制自 ChatGPT .__menu-item 局部变量，原变量不在全局作用域） */
+    --ca-item-hover: #0000000a;
+    --ca-item-active: #0000000f;
+}
+
+html.dark #chatanchor-panel {
+    --ca-item-hover: #ffffff1a;
+    --ca-item-active: #ffffff0d;
 }
 
 #chatanchor-panel.ca-collapsed {
@@ -67,8 +54,8 @@ html.dark {
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--ca-border);
-    background: var(--ca-bg);
+    border-bottom: 1px solid var(--border-light);
+    background: var(--sidebar-surface-primary);
     flex-shrink: 0;
 }
 
@@ -76,14 +63,16 @@ html.dark {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-tertiary);
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial;
 }
 
 .ca-icon {
     width: 18px;
     height: 18px;
-    color: var(--ca-accent);
+    color: var(--text-tertiary);
 }
 
 .ca-header-actions {
@@ -101,13 +90,13 @@ html.dark {
     background: transparent;
     border-radius: 6px;
     cursor: pointer;
-    color: var(--ca-text-secondary);
+    color: var(--icon-secondary);
     transition: background var(--ca-transition), color var(--ca-transition);
 }
 
 .ca-btn:hover {
-    background: var(--ca-bg-hover);
-    color: var(--ca-text);
+    background: var(--surface-hover);
+    color: var(--icon-primary);
 }
 
 .ca-btn svg {
@@ -125,30 +114,28 @@ html.dark {
    ============================================================ */
 .ca-search {
     padding: 8px 15px 4px 15px;
-    /* 减小底部间距: 8px -> 0 */
-    /* border-bottom: 1px solid var(--ca-border); 移除底部横线 */
     flex-shrink: 0;
 }
 
 .ca-search-input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid var(--ca-border);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
-    background: var(--ca-bg-secondary);
-    color: var(--ca-text);
+    background: var(--main-surface-secondary);
+    color: var(--text-primary);
     font-size: 13px;
     outline: none;
     transition: border-color var(--ca-transition), box-shadow var(--ca-transition);
 }
 
 .ca-search-input::placeholder {
-    color: var(--ca-text-secondary);
+    color: var(--text-tertiary);
 }
 
 .ca-search-input:focus {
-    border-color: var(--ca-accent);
-    box-shadow: 0 0 0 3px var(--ca-accent-light);
+    border-color: var(--text-tertiary);
+    box-shadow: none;
 }
 
 /* ============================================================
@@ -158,7 +145,6 @@ html.dark {
     flex: 1;
     overflow-y: auto;
     padding: 4px 8px 8px 8px;
-    /* 减小顶部间距: 8px -> 4px */
     min-height: 100px;
 }
 
@@ -171,38 +157,37 @@ html.dark {
 }
 
 .ca-list::-webkit-scrollbar-thumb {
-    background: var(--ca-border);
+    background: var(--border-light);
     border-radius: 3px;
 }
 
 .ca-list::-webkit-scrollbar-thumb:hover {
-    background: var(--ca-text-secondary);
+    background: var(--text-tertiary);
 }
 
 .ca-item {
     display: flex;
     align-items: center;
-    /* 垂直居中 */
     gap: 6px;
-    /* 减小间距，因为序号有了固定宽度 */
     padding: 6px 8px 6px 0px;
-    /* 减小左侧间距 (8px -> 4px) */
     border-radius: 8px;
     cursor: pointer;
     margin-bottom: 4px;
     background: transparent;
 }
 
+/* 光标悬停：较浅的背景色（与 ChatGPT 左侧边栏一致） */
 .ca-item:hover {
-    background: var(--ca-bg-hover);
+    background: var(--ca-item-hover);
 }
 
+/* 当前滚动位置对应的目录项：较深的背景色（与 ChatGPT 左侧边栏选中项一致） */
 .ca-item-active {
-    background: var(--ca-accent-light);
+    background: var(--ca-item-active);
 }
 
 .ca-item-active:hover {
-    background: var(--ca-accent-light);
+    background: var(--ca-item-active);
 }
 
 .ca-item-type {
@@ -218,25 +203,22 @@ html.dark {
 }
 
 .ca-type-user {
-    background: rgba(124, 58, 237, 0.15);
-    color: var(--ca-user-color);
+    background: var(--surface-hover);
+    color: var(--text-secondary);
 }
 
 .ca-type-assistant {
-    background: rgba(16, 163, 127, 0.15);
-    color: var(--ca-assistant-color);
+    background: var(--surface-hover);
+    color: var(--text-secondary);
 }
 
 .ca-item-index {
-    color: var(--ca-text-secondary);
+    color: var(--text-secondary);
     font-size: 13px;
     flex-shrink: 0;
     width: 24px;
-    /* 固定宽度，确保后续文字对齐 */
     text-align: right;
-    /* 数字右对齐 */
     font-variant-numeric: tabular-nums;
-    /* 等宽数字 */
 }
 
 .ca-item-summary {
@@ -245,22 +227,16 @@ html.dark {
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 14px;
-    /* 稍微增大文字 */
     line-height: 22px;
-    /* 设置行高与按钮高度一致(22px)，防止按钮出现时高度跳动 */
     font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
-
-
 
 /* 悬停时显示重命名按钮 */
 .ca-item-rename-btn {
     display: none;
-    /* 默认不占用空间，允许文字占据更多宽度 */
     background-image: var(--ca-icon-rename);
     background-position: center;
     background-size: 18px;
-    /* 稍微放大图标 */
     background-repeat: no-repeat;
     border: none;
     padding: 0;
@@ -269,18 +245,16 @@ html.dark {
     cursor: pointer;
     flex-shrink: 0;
     border-radius: 4px;
-    /* 移除 opacity transition 以防止闪烁，只保留背景色过渡 */
     transition: background-color 0.15s ease;
     filter: opacity(0.6);
 }
 
 .ca-item:hover .ca-item-rename-btn {
     display: block;
-    /* 悬停时显示，此时文字区域会自动缩小 */
 }
 
 .ca-item-rename-btn:hover {
-    background-color: var(--ca-hover);
+    background-color: var(--surface-hover);
     filter: opacity(1);
 }
 
@@ -299,51 +273,45 @@ html.dark {
     padding: 4px 8px;
     height: 28px;
     font-size: 13px;
-    border: 1px solid var(--ca-accent);
+    border: 1px solid var(--text-tertiary);
     border-radius: 4px;
-    background: var(--ca-bg);
-    color: var(--ca-text);
+    background: var(--sidebar-surface-primary);
+    color: var(--text-primary);
     outline: none;
     box-sizing: border-box;
     line-height: normal;
 }
 
 .ca-rename-input:focus {
-    box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+    box-shadow: 0 0 0 2px var(--border-light);
 }
 
-/* 已移除确认和取消按钮样式 */
-
-
-/* 跳转目标指示器（小绿点） */
+/* 跳转目标指示器（小圆点） */
 .ca-item-indicator {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     flex-shrink: 0;
     margin: 0 2px;
-    /* 增加小圆点左右间距 (flex gap 6px + margin 2px = 左右各 8px 视觉间距) */
-    /* 移除 margin-top，依赖 flex align-items: center */
     background: transparent;
 }
 
 .ca-indicator-active {
-    background: #22c55e;
-    box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
+    background: var(--text-secondary);
 }
 
 /* Tooltip 样式 */
 .ca-tooltip {
     position: absolute;
     z-index: 10000;
-    background: var(--ca-bg);
-    border: 1px solid var(--ca-border);
+    background: var(--sidebar-surface-primary);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 10px 12px;
     font-size: 13px;
     line-height: 1.5;
-    color: var(--ca-text);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     white-space: pre-wrap;
     word-break: break-word;
     animation: ca-tooltip-fadeIn 0.15s ease;
@@ -366,32 +334,14 @@ html.dark {
     align-items: center;
     justify-content: center;
     padding: 32px 16px;
-    color: var(--ca-text-secondary);
+    color: var(--text-tertiary);
     font-size: 13px;
-}
-
-/* ============================================================
-   底部
-   ============================================================ */
-.ca-footer {
-    padding: 10px 16px;
-    border-top: 1px solid var(--ca-border);
-    background: var(--ca-bg);
-    flex-shrink: 0;
-}
-
-.ca-count {
-    font-size: 12px;
-    color: var(--ca-text-secondary);
 }
 
 /* ============================================================
    展开按钮（ChatGPT 风格 - 与三个点按钮一致）
    ============================================================ */
 .ca-expand-btn {
-    /* 模仿: text-token-text-primary no-draggable hover:bg-token-surface-hover 
-       keyboard-focused:bg-token-surface-hover touch:h-10 touch:w-10 
-       flex h-9 w-9 items-center justify-center rounded-lg focus:outline-none */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -400,16 +350,15 @@ html.dark {
     padding: 0;
     border: none;
     border-radius: 0.5rem;
-    /* rounded-lg = 8px */
     background: transparent;
-    color: var(--ca-text);
+    color: var(--text-primary);
     cursor: pointer;
     outline: none;
     transition: background-color 0.15s ease;
 }
 
 .ca-expand-btn:hover {
-    background-color: var(--ca-bg-hover);
+    background-color: var(--surface-hover);
 }
 
 .ca-expand-btn:focus {

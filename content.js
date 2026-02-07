@@ -283,11 +283,6 @@
             <span>对话目录</span>
           </div>
           <div class="ca-header-actions">
-            <button class="ca-btn ca-btn-refresh" title="刷新目录">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12a9 9 0 11-2.2-5.9M21 3v6h-6"/>
-              </svg>
-            </button>
             <button class="ca-btn ca-btn-collapse" title="折叠面板">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M15 18l-6-6 6-6"/>
@@ -299,9 +294,6 @@
           <input type="text" class="ca-search-input" placeholder="搜索消息...">
         </div>
         <div class="ca-list"></div>
-        <div class="ca-footer">
-          <span class="ca-count">0 条消息</span>
-        </div>
       `;
 
             // 创建折叠时的按钮（ChatGPT 风格）
@@ -376,12 +368,6 @@
          * 绑定事件
          */
         bindEvents() {
-            // 刷新按钮
-            const refreshBtn = this.panel.querySelector('.ca-btn-refresh');
-            refreshBtn.addEventListener('click', () => {
-                this.refresh();
-            });
-
             // 折叠按钮
             const collapseBtn = this.panel.querySelector('.ca-btn-collapse');
             collapseBtn.addEventListener('click', () => {
@@ -583,10 +569,6 @@
                 .join('');
 
             this.listContainer.innerHTML = html || '<div class="ca-empty">暂无消息</div>';
-
-            // 更新计数
-            const countEl = this.panel.querySelector('.ca-count');
-            countEl.textContent = `${items.length} 条消息`;
 
             // 如果有编辑中的项目，聚焦输入框
             if (this.editingItemId) {
