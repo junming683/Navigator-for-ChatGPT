@@ -24,6 +24,8 @@
             USER_CONTENT: '.whitespace-pre-wrap',
             // 消息内容 - 助手
             ASSISTANT_CONTENT: '.markdown.prose',
+            // 右上角按钮容器（Share 按钮所在的容器）
+            HEADER_ACTIONS: 'div.flex.gap-2',
         },
         // 摘要最大字符数
         SUMMARY_MAX_LENGTH: 30,
@@ -302,7 +304,7 @@
         </div>
       `;
 
-            // 创建折叠时的按钮
+            // 创建折叠时的按钮（ChatGPT 风格）
             this.collapseBtn = document.createElement('button');
             this.collapseBtn.id = 'chatanchor-expand-btn';
             this.collapseBtn.className = 'ca-expand-btn';
@@ -312,10 +314,12 @@
           <path d="M4 6h16M4 12h16M4 18h10"/>
         </svg>
       `;
-            this.collapseBtn.style.display = 'none';
+            this.collapseBtn.style.display = 'flex';
 
             document.body.appendChild(this.panel);
-            document.body.appendChild(this.collapseBtn);
+
+            // 将折叠按钮插入到 ChatGPT 右上角按钮容器
+            this.insertExpandButton();
 
             // 获取引用
             this.listContainer = this.panel.querySelector('.ca-list');
@@ -326,6 +330,23 @@
 
             // 恢复折叠状态
             this.restoreState();
+        }
+
+        /**
+         * 将展开按钮插入到 ChatGPT 右上角
+         */
+        insertExpandButton() {
+            // 查找 ChatGPT 右上角的按钮容器
+            const headerActions = document.getElementById('conversation-header-actions');
+
+            if (headerActions) {
+                // 插入到容器的第一个位置（Share 按钮左侧）
+                headerActions.insertBefore(this.collapseBtn, headerActions.firstChild);
+            } else {
+                // 降级方案：添加到 body
+                console.warn('ChatGPT Chat Navigator: 未找到右上角按钮容器，使用降级方案');
+                document.body.appendChild(this.collapseBtn);
+            }
         }
 
         /**
@@ -854,7 +875,8 @@
         toggleCollapse() {
             this.isCollapsed = !this.isCollapsed;
             this.panel.classList.toggle('ca-collapsed', this.isCollapsed);
-            this.collapseBtn.style.display = this.isCollapsed ? 'flex' : 'none';
+            // 按钮始终显示
+            this.collapseBtn.style.display = 'flex';
             this.saveState();
         }
 

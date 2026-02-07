@@ -386,30 +386,34 @@ html.dark {
 }
 
 /* ============================================================
-   展开按钮
+   展开按钮（ChatGPT 风格 - 与三个点按钮一致）
    ============================================================ */
 .ca-expand-btn {
-    position: fixed;
-    top: 60px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
-    border: 1px solid var(--ca-border);
-    border-radius: 10px;
-    background: var(--ca-bg);
-    box-shadow: var(--ca-shadow);
-    cursor: pointer;
-    z-index: 9998;
+    /* 模仿: text-token-text-primary no-draggable hover:bg-token-surface-hover 
+       keyboard-focused:bg-token-surface-hover touch:h-10 touch:w-10 
+       flex h-9 w-9 items-center justify-center rounded-lg focus:outline-none */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--ca-accent);
-    transition: transform var(--ca-transition), box-shadow var(--ca-transition);
+    height: 36px;
+    width: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 0.5rem;
+    /* rounded-lg = 8px */
+    background: transparent;
+    color: var(--ca-text);
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.15s ease;
 }
 
 .ca-expand-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    background-color: var(--ca-bg-hover);
+}
+
+.ca-expand-btn:focus {
+    outline: none;
 }
 
 .ca-expand-btn svg {
