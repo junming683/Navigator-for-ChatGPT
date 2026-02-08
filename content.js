@@ -372,8 +372,9 @@
 
             // 注入图标路径 CSS 变量，确保路径正确
             try {
-                this.panel.style.setProperty('--ca-icon-rename', `url('${chrome.runtime.getURL('icons/rename.png')}')`);
-                this.panel.style.setProperty('--ca-icon-ai', `url('${chrome.runtime.getURL('icons/ai_sumarize.png')}')`);
+                this.panel.style.setProperty('--ca-icon-rename', `url('${chrome.runtime.getURL('icons/rename.svg')}')`);
+                this.panel.style.setProperty('--ca-icon-ai', `url('${chrome.runtime.getURL('icons/ai_sumarize.svg')}')`);
+                this.panel.style.setProperty('--ca-icon-hide', `url('${chrome.runtime.getURL('icons/hide.svg')}')`);
             } catch (e) {
                 console.warn('ChatGPT Chat Navigator: 设置图标路径失败', e);
             }
@@ -386,15 +387,18 @@
             <span>对话目录</span>
           </div>
           <div class="ca-header-actions">
-            <button class="ca-btn ca-btn-collapse" title="折叠面板">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M15 18l-6-6 6-6"/>
-              </svg>
-            </button>
+            <button class="ca-btn ca-btn-collapse" title="折叠面板"></button>
           </div>
         </div>
         <div class="ca-search">
-          <input type="text" class="ca-search-input" placeholder="搜索消息...">
+          <div class="ca-search-wrap">
+            <input type="text" class="ca-search-input" placeholder="搜索消息...">
+            <button class="ca-search-clear" title="清空搜索">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="ca-list"></div>
       `;
@@ -490,6 +494,14 @@
                     this.render();
                 }, CONFIG.DEBOUNCE_DELAY)
             );
+
+            // 搜索清空按钮
+            this.panel.querySelector('.ca-search-clear').addEventListener('click', () => {
+                this.searchInput.value = '';
+                this.searchTerm = '';
+                this.render();
+                this.searchInput.focus();
+            });
 
             // 目录项点击 - 使用 mousedown 比 click 更快响应
             this.listContainer.addEventListener('mousedown', (e) => {
@@ -714,7 +726,6 @@
                         // 编辑模式
                         return `
           <div class="ca-item ca-item-editing" data-id="${item.id}">
-            <span class="ca-item-index">${item.index}.</span>
             <input type="text" class="ca-rename-input" value="${this.escapeAttr(displayName)}" maxlength="${CONFIG.RENAME_MAX_LENGTH}" />
           </div>
         `;
@@ -722,7 +733,6 @@
                         // AI 摘要中
                         return `
           <div class="ca-item ca-item-summarizing" data-id="${item.id}">
-            <span class="ca-item-index">${item.index}.</span>
             <span class="ca-item-indicator"></span>
             <span class="ca-item-summary">AI 摘要中...</span>
             <span class="ca-item-ai-loading"></span>
@@ -732,7 +742,6 @@
                         // 常规模式
                         return `
           <div class="ca-item ${isActive ? 'ca-item-active' : ''}" data-id="${item.id}" data-fulltext="${this.escapeAttr(item.fullText || '')}" data-original="${this.escapeAttr(item.summary)}">
-            <span class="ca-item-index">${item.index}.</span>
             <span class="ca-item-indicator ${isJumpTarget ? 'ca-indicator-active' : ''}"></span>
             <span class="ca-item-summary ${hasCustomName ? 'ca-custom-name' : ''}">${this.escapeHtml(displayName)}</span>
             <button class="ca-item-ai-btn" title="AI 摘要"></button>
@@ -743,7 +752,11 @@
                 })
                 .join('');
 
-            this.listContainer.innerHTML = html || '<div class="ca-empty">暂无消息</div>';
+            const newHtml = html || '<div class="ca-empty">暂无消息</div>';
+            // 跳过无变化的渲染，避免 MutationObserver 反馈循环导致 hover 闪烁
+            if (newHtml === this._lastRenderedHtml) return;
+            this._lastRenderedHtml = newHtml;
+            this.listContainer.innerHTML = newHtml;
 
             // 如果有编辑中的项目，聚焦输入框
             if (this.editingItemId) {
