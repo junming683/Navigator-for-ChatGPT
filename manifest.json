@@ -7,8 +7,13 @@
         "storage"
     ],
     "host_permissions": [
-        "https://chatgpt.com/*"
+        "https://chatgpt.com/*",
+        "http://localhost:3000/*"
     ],
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
     "content_scripts": [
         {
             "matches": [

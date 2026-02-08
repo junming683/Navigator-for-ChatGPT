@@ -43,6 +43,10 @@
         TOOLTIP_DELAY: 500,
         // 存储键前缀
         STORAGE_KEY: 'chatanchor_renames',
+        // AI 摘要输入文本最大字符数
+        AI_SUMMARY_MAX_LENGTH: 1000,
+        // AI 摘要截断时首尾保留字符数
+        AI_SUMMARY_HALF_LENGTH: 500,
     };
 
     // ============================================================
@@ -100,6 +104,103 @@
         if (text.length <= maxLength) return text;
         return text.substring(0, maxLength) + '...';
     }
+
+    // ============================================================
+    // 文本预处理器
+    // ============================================================
+
+    /**
+     * 文本预处理器 - 将对话内容格式化为 AI 摘要所需的输入
+     *
+     * 扩展点说明：
+     * - formatForSummarization 的 userTextReducer / assistantTextReducer 参数
+     *   支持自定义文本缩减策略
+     * - 当前默认策略为直接截断（truncateText）
+     * - 未来可替换为 AI 摘要策略，例如：
+     *   const aiReducer = async (text) => await aiService.summarize(text);
+     *   TextPreprocessor.formatForSummarization({ ..., userTextReducer: aiReducer });
+     */
+    const TextPreprocessor = {
+        /**
+         * 默认文本缩减策略：直接截断
+         * 超过 maxLength 时，保留首尾各 halfLength 个字符，中间用 "……" 连接
+         */
+        truncateText(text, maxLength = CONFIG.AI_SUMMARY_MAX_LENGTH, halfLength = CONFIG.AI_SUMMARY_HALF_LENGTH) {
+            if (!text || text.length <= maxLength) return text || '';
+            return text.substring(0, halfLength) + '……' + text.substring(text.length - halfLength);
+        },
+
+        /**
+         * 从用户轮次 DOM 元素中提取对话对（用户提问 + AI 回答）
+         */
+        extractConversationPair(userTurnElement) {
+            const userContent = userTurnElement.querySelector(CONFIG.SELECTORS.USER_CONTENT);
+            const userText = userContent?.textContent?.trim() || '';
+
+            let assistantText = '';
+            const nextTurn = userTurnElement.nextElementSibling;
+            if (nextTurn && nextTurn.matches(CONFIG.SELECTORS.TURN)) {
+                const assistantContent = nextTurn.querySelector(CONFIG.SELECTORS.ASSISTANT_CONTENT);
+                assistantText = assistantContent?.textContent?.trim() || '';
+            }
+
+            return { userText, assistantText };
+        },
+
+        /**
+         * 格式化对话文本，用于发送给 AI 摘要
+         * @param {Object} options
+         * @param {string} options.userText - 用户提问文本
+         * @param {string} options.assistantText - AI 回答文本
+         * @param {Function} [options.userTextReducer] - 用户文本缩减策略（扩展点，可替换为 AI 摘要）
+         * @param {Function} [options.assistantTextReducer] - AI 回答文本缩减策略（扩展点）
+         * @returns {string} 格式化后的文本
+         */
+        formatForSummarization({ userText, assistantText, userTextReducer, assistantTextReducer }) {
+            const uReducer = userTextReducer || this.truncateText.bind(this);
+            const aReducer = assistantTextReducer || this.truncateText.bind(this);
+
+            const processedUser = uReducer(userText);
+            const processedAssistant = aReducer(assistantText);
+
+            return `User's Prompt:\n${processedUser}\nChatGPT's Answer:\n${processedAssistant}`;
+        },
+    };
+
+    // ============================================================
+    // AI 摘要服务
+    // ============================================================
+
+    /**
+     * AI 摘要服务 - 通过 background service worker 调用后端代理
+     */
+    const AISummarizerService = {
+        /**
+         * 检查服务是否可用
+         */
+        async isAvailable() {
+            return typeof chrome !== 'undefined' && !!chrome.runtime?.sendMessage;
+        },
+
+        /**
+         * 对文本进行摘要（通过后端代理调用 Qwen API）
+         */
+        async summarize(text) {
+            return new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage({ type: 'AI_SUMMARIZE', text }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        reject(new Error(chrome.runtime.lastError.message));
+                        return;
+                    }
+                    if (response?.error) {
+                        reject(new Error(response.error));
+                        return;
+                    }
+                    resolve(response?.summary || '');
+                });
+            });
+        },
+    };
 
     // ============================================================
     // 目录数据管理
@@ -191,6 +292,7 @@
             this.tooltipTimer = null;      // Tooltip 延迟计时器
             this.customNames = {};         // 自定义名称缓存
             this.editingItemId = null;     // 当前正在编辑的项目 ID
+            this.summarizingItemId = null; // 当前正在 AI 摘要的项目 ID
             this.conversationId = this.getConversationId(); // 当前对话 ID
         }
 
@@ -271,6 +373,7 @@
             // 注入图标路径 CSS 变量，确保路径正确
             try {
                 this.panel.style.setProperty('--ca-icon-rename', `url('${chrome.runtime.getURL('icons/rename.png')}')`);
+                this.panel.style.setProperty('--ca-icon-ai', `url('${chrome.runtime.getURL('icons/ai_sumarize.png')}')`);
             } catch (e) {
                 console.warn('ChatGPT Chat Navigator: 设置图标路径失败', e);
             }
@@ -396,6 +499,7 @@
                 // 如果点击的是重命名相关按钮或输入框，不处理滚动
                 if (e.target.closest('.ca-rename-btn') ||
                     e.target.closest('.ca-item-rename-btn') ||
+                    e.target.closest('.ca-item-ai-btn') ||
                     e.target.closest('.ca-rename-input')) {
                     return;
                 }
@@ -412,8 +516,19 @@
                 }
             });
 
-            // 重命名按钮点击
+            // AI 摘要按钮和重命名按钮点击
             this.listContainer.addEventListener('click', (e) => {
+                // 点击 AI 摘要按钮
+                if (e.target.closest('.ca-item-ai-btn')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const item = e.target.closest('.ca-item');
+                    if (item && item.dataset.id) {
+                        this.aiSummarize(item.dataset.id);
+                    }
+                    return;
+                }
+
                 // 点击重命名按钮
                 if (e.target.closest('.ca-item-rename-btn')) {
                     e.preventDefault();
@@ -521,6 +636,53 @@
         }
 
         /**
+         * AI 摘要并自动重命名
+         */
+        async aiSummarize(itemId) {
+            // 防止重复触发
+            if (this.summarizingItemId) return;
+
+            // 检查 AI 可用性
+            const available = await AISummarizerService.isAvailable();
+            if (!available) {
+                console.warn('ChatGPT Chat Navigator: Summarizer API 不可用，请确保使用支持内置 AI 的 Chrome 浏览器');
+                return;
+            }
+
+            // 查找对应的目录项
+            const tocItem = this.tocManager.getItems().find((i) => i.id === itemId);
+            if (!tocItem || !tocItem.element) return;
+
+            // 设置摘要状态并更新 UI
+            this.summarizingItemId = itemId;
+            this.hideTooltip();
+            this.render();
+
+            try {
+                // 提取对话内容
+                const { userText, assistantText } = TextPreprocessor.extractConversationPair(tocItem.element);
+
+                // 格式化文本
+                const inputText = TextPreprocessor.formatForSummarization({ userText, assistantText });
+
+                // 调用 AI 摘要
+                const summary = await AISummarizerService.summarize(inputText);
+
+                // 截取摘要结果到最大长度并保存
+                const newName = (summary || '').trim().substring(0, CONFIG.RENAME_MAX_LENGTH);
+                if (newName) {
+                    await this.saveCustomName(itemId, newName);
+                }
+            } catch (e) {
+                console.warn('ChatGPT Chat Navigator: AI 摘要失败', e);
+            } finally {
+                // 清除摘要状态并更新 UI
+                this.summarizingItemId = null;
+                this.render();
+            }
+        }
+
+        /**
          * 渲染目录列表
          */
         render() {
@@ -546,12 +708,24 @@
                     const displayName = this.getDisplayName(item);
                     const hasCustomName = this.customNames[item.id] ? true : false;
 
+                    const isSummarizing = item.id === this.summarizingItemId;
+
                     if (isEditing) {
                         // 编辑模式
                         return `
           <div class="ca-item ca-item-editing" data-id="${item.id}">
             <span class="ca-item-index">${item.index}.</span>
             <input type="text" class="ca-rename-input" value="${this.escapeAttr(displayName)}" maxlength="${CONFIG.RENAME_MAX_LENGTH}" />
+          </div>
+        `;
+                    } else if (isSummarizing) {
+                        // AI 摘要中
+                        return `
+          <div class="ca-item ca-item-summarizing" data-id="${item.id}">
+            <span class="ca-item-index">${item.index}.</span>
+            <span class="ca-item-indicator"></span>
+            <span class="ca-item-summary">AI 摘要中...</span>
+            <span class="ca-item-ai-loading"></span>
           </div>
         `;
                     } else {
@@ -561,6 +735,7 @@
             <span class="ca-item-index">${item.index}.</span>
             <span class="ca-item-indicator ${isJumpTarget ? 'ca-indicator-active' : ''}"></span>
             <span class="ca-item-summary ${hasCustomName ? 'ca-custom-name' : ''}">${this.escapeHtml(displayName)}</span>
+            <button class="ca-item-ai-btn" title="AI 摘要"></button>
             <button class="ca-item-rename-btn" title="重命名"></button>
           </div>
         `;
@@ -666,8 +841,8 @@
             // 确保展开按钮在正确的 DOM 位置（SPA 路由切换会重建 header）
             this.insertExpandButton();
 
-            // 如果正在滚动或正在重命名，跳过刷新以避免干扰
-            if (this.isScrolling || this.editingItemId) return;
+            // 如果正在滚动、正在重命名或正在 AI 摘要，跳过刷新以避免干扰
+            if (this.isScrolling || this.editingItemId || this.summarizingItemId) return;
             this.tocManager.scan();
             this.render();
         }
