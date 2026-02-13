@@ -101,19 +101,14 @@ html.dark #chatanchor-panel {
 .ca-btn-collapse {
     width: 30px;
     height: 30px;
-    -webkit-mask-image: var(--ca-icon-hide);
-    -webkit-mask-size: 18px;
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-image: var(--ca-icon-hide);
-    mask-size: 18px;
-    mask-position: center;
-    mask-repeat: no-repeat;
-    background: var(--text-tertiary);
+    background: transparent;
+    color: var(--text-tertiary);
+    font-size: 18px;
+    line-height: 1;
 }
 
 .ca-btn-collapse:hover {
-    background: var(--text-secondary);
+    color: var(--text-secondary);
 }
 
 /* ============================================================
@@ -263,15 +258,8 @@ html.dark #chatanchor-panel {
 /* 悬停时显示重命名按钮 */
 .ca-item-rename-btn {
     display: none;
-    -webkit-mask-image: var(--ca-icon-rename);
-    -webkit-mask-size: 16px;
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-image: var(--ca-icon-rename);
-    mask-size: 16px;
-    mask-position: center;
-    mask-repeat: no-repeat;
-    background: var(--text-tertiary);
+    background: transparent;
+    color: var(--text-tertiary);
     border: none;
     padding: 0;
     width: 22px;
@@ -286,62 +274,7 @@ html.dark #chatanchor-panel {
 }
 
 .ca-item-rename-btn:hover {
-    background: var(--text-secondary);
-}
-
-/* AI 摘要按钮 */
-.ca-item-ai-btn {
-    display: none;
-    -webkit-mask-image: var(--ca-icon-ai);
-    -webkit-mask-size: 16px;
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-image: var(--ca-icon-ai);
-    mask-size: 16px;
-    mask-position: center;
-    mask-repeat: no-repeat;
-    background: var(--text-tertiary);
-    border: none;
-    padding: 0;
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    flex-shrink: 0;
-    border-radius: 4px;
-}
-
-.ca-item:hover .ca-item-ai-btn {
-    display: block;
-}
-
-.ca-item-ai-btn:hover {
-    background: var(--text-secondary);
-}
-
-/* AI 摘要中状态 */
-.ca-item-summarizing {
-    pointer-events: none;
-}
-
-.ca-item-summarizing .ca-item-summary {
-    color: var(--text-tertiary);
-    font-style: italic;
-}
-
-.ca-item-ai-loading {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--border-light);
-    border-top-color: var(--text-secondary);
-    border-radius: 50%;
-    animation: ca-spin 0.6s linear infinite;
-    flex-shrink: 0;
-}
-
-@keyframes ca-spin {
-    to {
-        transform: rotate(360deg);
-    }
+    color: var(--text-secondary);
 }
 
 /* 编辑模式 */
