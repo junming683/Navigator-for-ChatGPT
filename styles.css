@@ -8,21 +8,9 @@
    CSS 变量（仅保留布局/动画变量，颜色全部使用 ChatGPT 原生 token）
    ============================================================ */
 :root {
-    --ca-panel-width: 280px;
+    --ca-panel-width: 260px;
     --ca-header-height: 48px;
     --ca-transition: 0.2s ease;
-}
-
-#chatanchor-layout-wrap {
-    display: flex;
-    width: 100%;
-    min-width: 0;
-    align-items: stretch;
-}
-
-#chatanchor-layout-wrap > main {
-    flex: 1;
-    min-width: 0;
 }
 
 /* ============================================================
@@ -54,9 +42,14 @@ html.dark #chatanchor-panel {
 }
 
 #chatanchor-panel.ca-collapsed {
-    width: 0;
-    border-left: none;
-    pointer-events: none;
+    width: 48px;
+    overflow: hidden;
+}
+
+#chatanchor-panel.ca-collapsed .ca-search,
+#chatanchor-panel.ca-collapsed .ca-list,
+#chatanchor-panel.ca-collapsed .ca-title span {
+    display: none;
 }
 
 /* ============================================================
