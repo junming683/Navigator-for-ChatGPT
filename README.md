@@ -2,12 +2,12 @@
 
 为 ChatGPT 打造的对话导航工具，自动生成侧边目录，助您在长对话中快速定位
 
-![Chrome Extension](https://img.shields.io/badge/Platform-Chrome-4285F4?logo=google-chrome&logoColor=white)
+![Firefox Extension](https://img.shields.io/badge/Platform-Firefox-FF7139?logo=firefox-browser&logoColor=white)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-brightgreen)
 
 ## 简介
 
-**Navigator for ChatGPT** 是一款 Chrome 浏览器扩展，专为 ChatGPT 深度用户设计。当您与 ChatGPT 进行长篇对话时，它会自动在页面右侧生成一个侧边栏目录面板，让您可以一目了然地查看对话结构，并快速跳转到任意问答位置。
+**Navigator for ChatGPT** 是一款浏览器扩展（当前仓库为 Firefox PC 本地导入版本），专为 ChatGPT 深度用户设计。当您与 ChatGPT 进行长篇对话时，它会自动在页面右侧生成一个侧边栏目录面板，让您可以一目了然地查看对话结构，并快速跳转到任意问答位置。
 
 ![show_3-1](./assets/show_3-1.png)
 
@@ -53,19 +53,15 @@
 
 ## 安装方法
 
-### 方式一：开发者模式安装
+### Firefox（PC）本地导入
 
-1. **下载**：在 release 中下载 zip 压缩包，解压缩
-2. **打开扩展管理页**：在 Chrome 地址栏输入 `chrome://extensions/` 或点击菜单 → 更多工具 → 扩展程序
-3. **启用开发者模式**：打开页面右上角的「开发者模式」开关
-4. **加载扩展**
-   - 点击「加载已解压的扩展程序」
-   - 选择本项目的根目录（包含 `manifest.json` 的文件夹）
-5. **开始使用**：访问 [ChatGPT](https://chatgpt.com) ，点击右上角折叠按钮，即可展开右侧目录面板
+1. **下载并解压**：下载本项目代码或 release 压缩包，并解压到本地目录。
+2. **打开调试页**：在 Firefox 地址栏输入 `about:debugging#/runtime/this-firefox`。
+3. **临时载入扩展**：点击「临时载入附加组件」。
+4. **选择清单文件**：在项目目录中选择 `manifest.json`。
+5. **开始使用**：访问 [ChatGPT](https://chatgpt.com) 或 [chat.openai.com](https://chat.openai.com)，点击右上角折叠按钮展开右侧目录面板。
 
-### 方法二：从谷歌商店安装
-
-> 敬请期待
+> 说明：`about:debugging` 的临时载入在重启 Firefox 后需要重新导入，适合本地开发和自用测试场景。
 
 ## 使用指南
 
